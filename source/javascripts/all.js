@@ -26,19 +26,23 @@ $('document').ready(function(){
 		x: 0,
 		y: 0,
 		draggable: true,
-		dragBoundFunc: function(pos) {
-			var X = pos.x;
-
-			if (X <= 0) {
+		dragBoundFunc: function(pos) {		
+			if (pos.x >= 0) {
 				return {
-					x: X,
+					x: 0,
+					y: this.getAbsolutePosition().y
+				}			
+			}
+			else if (pos.x <= 0 && pos.x >= maxX) {
+				return {
+					x: pos.x,
 					y: this.getAbsolutePosition().y
 				}
-			} 
-			return {
-				x: 0,
-				y: this.getAbsolutePosition().y
 			}
+			return {
+				x: maxX,
+				y: this.getAbsolutePosition().y
+			}		
 		}
 	});
 	stage.add(layer);
