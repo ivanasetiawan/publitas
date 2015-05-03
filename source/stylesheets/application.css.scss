@@ -11,17 +11,9 @@
 		background: #f2f2f2 !important;
 		cursor: -webkit-grab; 
 		cursor: -moz-grab;
-		&.ss {
+		&.grabbing {
 			cursor: -webkit-grabbing; 
 			cursor: -moz-grabbing;
 		}
 	}
 }
-
-// .wrapper {
-// 	width: 640px;
-// 	height: 400px;
-// 	margin: 0 auto; 
-// 	overflow: hidden;
-// 	background: red;
-// }

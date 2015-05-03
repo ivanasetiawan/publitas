@@ -21,6 +21,7 @@ $('document').ready(function(){
 	var minX = stage.getX();
 	var maxX = -((stage.getWidth() * imageURLs.length) - stage.getWidth());
 	var layer = new Kinetic.Layer();
+
 	var group = new Kinetic.Group({
 		x: 0,
 		y: 0,
@@ -33,59 +34,14 @@ $('document').ready(function(){
 					x: X,
 					y: this.getAbsolutePosition().y
 				}
-			}
-			
+			} 
 			return {
 				x: 0,
 				y: this.getAbsolutePosition().y
 			}
 		}
 	});
-
-	var white = new Kinetic.Rect({
-			x: 0,
-			y: 0,
-			width: 640,
-			height: 400,
-			fill: 'red',
-			stroke: 'black',
-			strokeWidth: 2
-	});
-	layer.add(white);
 	stage.add(layer);
-
-	var minX = white.getX();
-	var maxX = white.getX() + white.getWidth();
-
-
-	// $("#container").find('canvas').attr('id', 'canvas');
-	var canvas = document.getElementById('canvas');
-	var ctx = document.getElementById('canvas').getContext('2d');
-
-	function drawImageScaled(img, ctx) {
-		var canvas = ctx.canvas ;
-		var hRatio = canvas.width  / img.width    ;
-		var vRatio =  canvas.height / img.height  ;
-		var ratio  = Math.min ( hRatio, vRatio );
-		var centerShift_x = ( canvas.width - img.width*ratio ) / 2;
-		var centerShift_y = ( canvas.height - img.height*ratio ) / 2;  
-		ctx.clearRect(0,0,canvas.width, canvas.height);
-		ctx.drawImage(img, 0,0, 
-									img.width, img.height,
-									centerShift_x, centerShift_y, img.width*ratio, img.height*ratio);  
-	}
-
-	for (var i = 0; i < imageURLs.length; i++) {
-		var img = new Image();
-
-		img.src = imageURLs[i];
-		imgs.push(img);
-		img.onerror 		= function() { alert("image load failed"); } 
-		img.crossOrigin	=	"anonymous";
-
-		img.onload= drawImageScaled.bind(null, img, ctx);
-		
-	}
 
 	// fully load every image, then call the start function
 	loadAllImages(start);
@@ -99,7 +55,6 @@ $('document').ready(function(){
 				imagesOK++; 
 				if (imagesOK >= imageURLs.length ) {
 					callback();
-					drawImageScaled.bind(null, img, ctx)
 				}
 			};
 
@@ -116,6 +71,8 @@ $('document').ready(function(){
 		for(var i = 0; i < imgs.length; i++){
 			(function() {
 				var img = new Kinetic.Image({
+					width: 640,
+					height: 400,
 					x: (i * canvasW),
 					y: 0,
 					image: imgs[i],
@@ -124,10 +81,10 @@ $('document').ready(function(){
 			})();
 
 			group.on('dragstart', function() {
-				$('#container').find('canvas').addClass('ss');
+				$('#container').find('canvas').addClass('grabbing');
 			});
 			group.on('dragend', function() {
-				$('#container').find('canvas').removeClass('ss');
+				$('#container').find('canvas').removeClass('grabbing');
 			});
 
 			layer.add(group);
@@ -137,4 +94,30 @@ $('document').ready(function(){
 		layer.draw();
 	}
 
+
+	////////
+	// Aspect Ration - inject on kinetic image
+	var canvas = document.getElementById('canvas');
+	var ctx = canvas.getContext('2d');
+
+	function drawImageScaled(img, ctx) {
+		var canvas = ctx.canvas ;
+		var hRatio = canvas.width  / img.width    ;
+		var vRatio =  canvas.height / img.height  ;
+		var ratio  = Math.min ( hRatio, vRatio );
+		var centerShift_x = ( canvas.width - img.width*ratio ) / 2;
+		var centerShift_y = ( canvas.height - img.height*ratio ) / 2;  
+		ctx.clearRect(0,0,canvas.width, canvas.height);
+		ctx.drawImage(img, 0,0, 
+									img.width, img.height,
+									centerShift_x, centerShift_y, img.width*ratio, img.height*ratio);  
+	}
+
+	for (var i = 0; i < imageURLs.length; i++) {
+		var img = new Image();
+		img.src = imageURLs[i];
+		imgs.push(img);
+		img.onload= drawImageScaled.bind(null, img, ctx);
+	}
+	////////
 });
